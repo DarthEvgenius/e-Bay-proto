@@ -1,11 +1,22 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.forms import ModelForm, Textarea
 
-from .models import User
+from .models import User, Listing
 
+
+# Form class for a new listing
+class ListingForm(ModelForm):
+    class Meta:
+        model = Listing
+        fields = ['title', 'category', 'init_price', 'image', 'description']
+        widgets = {
+            'description': Textarea(attrs={'cols': 80, 'rows': 10})
+        }
 
 def index(request):
     return render(request, "auctions/index.html")
@@ -61,3 +72,19 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+
+# Decorator makes view available for logged users only
+@login_required
+def new_listing(request):
+    """ Creates a new lsting """
+
+    if request.method == "POST":
+        form = ListingForm(request.POST)
+        return render(request, "auctions/new_listing.html", {
+            "form": form
+        })
+    else:
+        return render(request, "auctions/new_listing.html", {
+            "form": ListingForm()
+        })
