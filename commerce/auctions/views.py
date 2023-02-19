@@ -77,10 +77,39 @@ def register(request):
 # Decorator makes view available for logged users only
 @login_required
 def new_listing(request):
-    """ Creates a new lsting """
+    """ Creates a new listing """
 
     if request.method == "POST":
         form = ListingForm(request.POST)
+        if form.is_valid():
+            # We can manually get data from the Form:
+            # title = form.cleaned_data['title']
+            # category = form.cleaned_data['category']
+            # init_price = form.cleaned_data['init_price']
+            # image = form.cleaned_data['image']
+            # description = form.cleaned_data['description']
+
+            # But using method form.save() will create and save a database object automatically!
+            # And form.save(commit=False) allows to set values of the missing fields in ListingForm
+
+            # Create, but don't save the new listing instance.
+            listing = form.save(commit=False)
+
+            # Fill the missing field ("status" field has defaut, and "winner" will be set when the listing will be closed)
+            seller = request.user.username
+            listing.seller = User.objects.get(username=seller)
+
+            # Save the new instance.
+            listing.save()
+
+            # Now, save the many-to-many data for the form.
+            form.save_m2m()
+
+
+            return render(request, "auctions/index.html", {
+                "message": f"{seller}"
+            })
+
         return render(request, "auctions/new_listing.html", {
             "form": form
         })
