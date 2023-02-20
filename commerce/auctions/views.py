@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.forms import ModelForm, Textarea
 
-from .models import User, Listing
+from .models import User, Listing, Category
 
 
 # Form class for a new listing
@@ -137,4 +137,24 @@ def listing(request, id):
     # Pass the listing to the template
     return render(request, "auctions/listing.html", {
         "listing": listing
+    })
+
+
+def categories(request):
+    """ Shows the list of caegories """
+    
+    categories = Category.objects.all()
+
+    return render(request, "auctions/categories.html", {
+        "categories": categories
+    })
+
+
+def category(request, category):
+    """ Shows all the active listings of that category """
+
+    category_listings = Listing.objects.filter(category)
+
+    return render(request, "auctions/categories.html", {
+        "category_listings": category_listings
     })

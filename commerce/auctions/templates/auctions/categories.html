@@ -2,4 +2,34 @@
 
 {% block body %}
 
+	<!-- shows categories -->
+	{% for i in categories %}
+		<div>
+			<a href="{% url 'category' category=i %}">{{ i.category }}</a>
+		</div>
+	{% endfor %}
+
+	{% if category_listings %}
+		{% for i in category_listings %}
+			<div class="col-12 border">
+				<h3>
+					<a href="">{{ i.title }}</a>
+				</h3>
+				<div>
+					<h5>Description</h5>
+					{{ i.description }}
+				</div>
+				<div>
+					<h5>Price</h5>                    
+					<p>
+						Current price: {{ i.current_price }}$
+					</p>
+				</div>
+				<div>
+					<h5>Seller</h5>
+					{{ i.seller }}
+				</div>
+			</div>
+		{% endfor %}
+	{% endif %}
 {% endblock %}
