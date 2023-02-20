@@ -21,6 +21,8 @@ class Listing(models.Model):
 
     init_price = models.IntegerField()
 
+    current_price = models.IntegerField(blank=True, null=True)
+
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="category_listings")
     # If the listing is active or not
     status = models.BooleanField(default=True)
@@ -33,7 +35,7 @@ class Listing(models.Model):
     winner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return f"Title - {self.title}; seller - {self.seller}; status {self.status}"
+        return f"ID: {self.id}; Title: {self.title}; seller: {self.seller}; status: {self.status}; category: {self.category}"
 
 class Comment(models.Model):
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="listing_comments")
@@ -45,6 +47,9 @@ class Bid(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     price = models.IntegerField()
     time = models.DateTimeField(auto_now=True)
+
+    # def __str__(self):
+    #     return f"Listing: {self.listing.title}; User: {self.user}, {self.price}$"
 
 class Watchlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_watchlist")

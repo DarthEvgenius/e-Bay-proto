@@ -19,7 +19,15 @@ class ListingForm(ModelForm):
         }
 
 def index(request):
-    return render(request, "auctions/index.html")
+    """ Views all of the currently active auction listings """
+
+    # Get all active listings
+    active_listings = Listing.objects.filter(status=True)
+    
+    # Give this Query Set to the template
+    return render(request, "auctions/index.html", {
+        "active_listings": active_listings
+    })
 
 
 def login_view(request):
@@ -106,9 +114,10 @@ def new_listing(request):
             form.save_m2m()
 
 
-            return render(request, "auctions/index.html", {
-                "message": f"{seller}"
-            })
+            # return render(request, "auctions/index.html", {
+            #     "message": f"{seller}"
+            # })
+            return HttpResponseRedirect(reverse("index"))
 
         return render(request, "auctions/new_listing.html", {
             "form": form
@@ -117,3 +126,15 @@ def new_listing(request):
         return render(request, "auctions/new_listing.html", {
             "form": ListingForm()
         })
+
+
+def listing(request, id):
+    """ Shows the details of the listing """
+
+    # Get the listing by id
+    listing = Listing.objects.get(id=id)
+
+    # Pass the listing to the template
+    return render(request, "auctions/listing.html", {
+        "listing": listing
+    })

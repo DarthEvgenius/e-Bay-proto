@@ -9,9 +9,15 @@ from .models import User, Category, Listing, Comment, Bid, Watchlist
 class UserAdmin(admin.ModelAdmin):
 	list_display = ("id", "username", "first_name", "last_name", "email")
 
+class ListingAdmin(admin.ModelAdmin):
+	list_display = ("id", "title", "status", "seller", "category")
+
+class BidAdmin(admin.ModelAdmin):
+	list_display = ("listing", "user", "price", "time")
+
 admin.site.register(User, UserAdmin)
 admin.site.register(Category)
-admin.site.register(Listing)
+admin.site.register(Listing, ListingAdmin)
 admin.site.register(Comment)
-admin.site.register(Bid)
+admin.site.register(Bid, BidAdmin)
 admin.site.register(Watchlist)
