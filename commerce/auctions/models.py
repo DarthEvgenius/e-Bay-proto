@@ -19,9 +19,10 @@ class Listing(models.Model):
     # We can look for this user's other listings
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_listings")
 
-    init_price = models.IntegerField()
+    # Decimal Field can be configured with a resolution on decimal places
+    init_price = models.DecimalField(max_digits=15, decimal_places=2)
 
-    current_price = models.IntegerField(blank=True, null=True)
+    current_price = models.DecimalField(blank=True, null=True, max_digits=15, decimal_places=2)
 
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="category_listings")
     # If the listing is active or not
@@ -45,7 +46,7 @@ class Comment(models.Model):
 class Bid(models.Model):
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="listing_bids")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    price = models.IntegerField()
+    price = models.DecimalField(max_digits=15, decimal_places=2)
     time = models.DateTimeField(auto_now=True)
 
     # def __str__(self):

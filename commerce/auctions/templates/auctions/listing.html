@@ -3,8 +3,11 @@
 {% block body %}
 	<h2>{{ listing.title }}</h2>
 	<div>{{ listing.description }}</div>
+	<div>
+		<p>Initial price: <del>{{ listing.init_price }} $</del></p>
+	</div>
 
-	<!-- Simply view listings to unauthorized users -->
+	<!-- Simply view a listing to unauthorized users -->
 
 	<!-- Add "user.is_authenticated" for "Add to watchlist", "Bid", "comments"-->
 
