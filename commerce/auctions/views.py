@@ -153,8 +153,18 @@ def categories(request):
 def category(request, category):
     """ Shows all the active listings of that category """
 
-    category_listings = Listing.objects.filter(category)
+    # Get id of the category, because Foreign Key wants id of the Primary key
+    cat_id = Category.objects.get(category=category)
+    
+    # Get listings
+    category_listings = Listing.objects.filter(category=cat_id)
+
+    print(category_listings)
+
+    # Get all the categories to view them
+    categories = Category.objects.all()
 
     return render(request, "auctions/categories.html", {
-        "category_listings": category_listings
+        "category_listings": category_listings,
+        "categories": categories
     })
