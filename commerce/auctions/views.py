@@ -103,9 +103,12 @@ def new_listing(request):
             # Create, but don't save the new listing instance.
             listing = form.save(commit=False)
 
-            # Fill the missing field ("status" field has defaut, and "winner" will be set when the listing will be closed)
+            # Fill the missing fields ("status" field has defaut, and "winner" will be set when the listing will be closed)
             seller = request.user.username
             listing.seller = User.objects.get(username=seller)
+            
+            # When we create a listing init price is the current
+            listing.current_price = form.cleaned_data['init_price']
 
             # Save the new instance.
             listing.save()

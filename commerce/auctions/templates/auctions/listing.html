@@ -1,18 +1,58 @@
 {% extends 'auctions/layout.html' %}
 
 {% block body %}
-	<h2>{{ listing.title }}</h2>
-	<div>{{ listing.description }}</div>
-	<div>
-		<p>Initial price: <del>{{ listing.init_price }} $</del></p>
+	<h2 class="text-center">{{ listing.title }}</h2>
+
+	<div class="container p-3">
+	
+		<div class="row">
+
+			<!-- All content except image -->
+			<div class="col-8">
+				<!-- Prices -->
+				<div class="row py-3">
+					<div class="col-3">
+						Initial Price: <del>{{ listing.init_price }} $</del>
+					</div>
+					<div class="col-3">
+						Current Price: {{ listing.current_price }} $
+					</div>
+					<div class="col-6">
+						{% if listing.status == True %}
+							Status: Active
+						{% else %}
+							Status: Closed
+						{% endif %}
+						
+					</div>
+				</div>
+				
+				<!-- Description -->
+				<div class="mb-3">
+					<h4>Description:</h4>
+					<p class="bg-light p-3">
+						{{ listing.description }}
+					</p>
+				</div>
+
+				<!-- Seller -->
+				<div>
+					<p class="fs-5">Seller: {{ listing.seller }}</p>
+				</div>
+			</div>
+
+			<!-- For image -->
+			<div class="col-4"></div>
+		</div>
 	</div>
+	
 
 	<!-- Simply view a listing to unauthorized users -->
 
 	<!-- Add "user.is_authenticated" for "Add to watchlist", "Bid", "comments"-->
 
-	<!-- Seller must have an option to close a listing -->
+	<!-- Seller must have an option to close a listing : authorized_user = seller -->
 
-	<!-- Winner must know that he is a winner -->
+	<!-- Winner must know that he is a winner : authorized_user = winner -->
 	
 	{% endblock %}
