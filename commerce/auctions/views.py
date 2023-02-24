@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.forms import ModelForm, Textarea
 
-from .models import User, Listing, Category
+from .models import User, Listing, Category, Watchlist
 
 
 # Form class for a new listing
@@ -170,4 +170,20 @@ def category(request, category):
     return render(request, "auctions/categories.html", {
         "category_listings": category_listings,
         "categories": categories
+    })
+
+
+@login_required
+def watchlist(request, username):
+    """ Shows the user's watchlist of listings """
+
+    # Get the current user
+    current_user = User.objects.get(username=username)
+
+    # Get all the watched listings of the user via related name
+    watch_list = current_user.user_watchlist.all()
+    print(watch_list)
+    
+    return render(request, "auctions/watchlist.html", {
+        "watchlist": watch_list
     })

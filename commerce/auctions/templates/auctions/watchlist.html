@@ -1,0 +1,33 @@
+{% extends 'auctions/layout.html' %}
+
+<!-- Good idea to make a layout for show listing's info  -->
+
+{% block body %}
+	{% for i in watchlist %}
+		<h3>
+			<a href="{% url 'listing' id=i.id %}">{{ i.title }}</a>
+		</h3>
+		<div>
+			<h5>Description</h5>
+			{{ i.description }}
+		</div>
+		<div>
+			<h5>Price</h5>                    
+			<p>
+				Current price: {{ i.current_price }}$
+			</p>
+		</div>
+		<div>
+			<h5>Category</h5>
+			{{ i.category }}
+		</div>
+		<div>
+			<h5>Seller</h5>
+			{{ i.seller }}
+		</div>
+	{% empty %}
+		<p>
+			There are no listings in your watchlist.
+		</p>
+	{% endfor %}
+{% endblock %}

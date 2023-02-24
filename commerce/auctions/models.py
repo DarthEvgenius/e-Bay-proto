@@ -5,6 +5,9 @@ from django.db import models
 class User(AbstractUser):
     pass
 
+    def __str__(self):
+        return f"ID: {self.id}; Username: {self.username}"
+
 
 class Category(models.Model):
     category = models.CharField(max_length=20)
