@@ -6,20 +6,19 @@ class User(AbstractUser):
     pass
 
     def __str__(self):
-        return f"ID: {self.id}; Username: {self.username}"
+        return f"{self.username}"
 
 
 class Category(models.Model):
-    category = models.CharField(max_length=20)
+    name = models.CharField(max_length=20, primary_key=True)
 
     def __str__(self):
-        return f"{ self.category }"
+        return f"{self.name}"
 
 class Listing(models.Model):
-    title = models.CharField(max_length=50)
+    title = models.CharField(max_length=50, unique=True)
 
     # Who is owner of the listing
-    # We can look for this user's other listings
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_listings")
 
     # Decimal Field can be configured with a resolution on decimal places
@@ -28,6 +27,7 @@ class Listing(models.Model):
     current_price = models.DecimalField(blank=True, null=True, max_digits=15, decimal_places=2)
 
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="category_listings")
+
     # If the listing is active or not
     status = models.BooleanField(default=True)
 
@@ -36,10 +36,12 @@ class Listing(models.Model):
     description = models.CharField(max_length=1000)
 
     # This field we populate after smb wil win the listing, so it could be empty
-    winner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    winner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name="winner_listings")
+
+    watchlist = models.ManyToManyField(User, related_name="user_watchlist")
 
     def __str__(self):
-        return f"ID: {self.id}; Title: {self.title}; seller: {self.seller}; status: {self.status}; category: {self.category}"
+        return f"{self.title}; seller: {self.seller}; status: {self.status}; category: {self.category}"
 
 class Comment(models.Model):
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="listing_comments")
@@ -55,9 +57,9 @@ class Bid(models.Model):
     def __str__(self):
         return f"Listing: {self.listing.title}; User: {self.user}, {self.price}$"
 
-class Watchlist(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_watchlist")
-    listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
+# class Watchlist(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_watchlist")
+#     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return f"Listing: {self.listing.title}; User: {self.user}$"
+#     def __str__(self):
+#         return f"Listing: {self.listing.title}; User: {self.user}$"

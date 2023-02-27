@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.forms import ModelForm, Textarea
 
-from .models import User, Listing, Category, Watchlist
+from .models import User, Listing, Category
 
 
 # Form class for a new listing
@@ -137,10 +137,47 @@ def listing(request, id):
     # Get the listing by id
     listing = Listing.objects.get(id=id)
 
+    # Check if the listing is in user's watchlist (return 1/0 after query)
+    inWatchlist = request.user in listing.watchlist.all()
+
     # Pass the listing to the template
     return render(request, "auctions/listing.html", {
-        "listing": listing
+        "listing": listing,
+        "inWatchlist":inWatchlist
     })
+
+
+@login_required
+def add_watch(request, listing_id):
+    """ Adds the listing to the user's watchlist"""
+
+    # Get the listing by id
+    listing = Listing.objects.get(id=listing_id)
+
+    # Get the username
+    user = request.user.pk
+ 
+    # Create the relation
+    listing.watchlist.add(user)
+
+    return HttpResponseRedirect(reverse("listing", args=(listing_id, )))
+
+
+@login_required
+def remove_watch(request, listing_id):
+    """ Removes the listing from the user's watchlist"""
+
+    # Get the listing by id
+    listing = Listing.objects.get(id=listing_id)
+
+    # Get the username
+    user = request.user.pk
+ 
+    # Create the relation
+    listing.watchlist.remove(user)
+
+    return HttpResponseRedirect(reverse("listing", args=(listing_id, )))
+
 
 
 def categories(request):
@@ -156,34 +193,36 @@ def categories(request):
 def category(request, category):
     """ Shows all the active listings of that category """
 
-    # Get id of the category, because Foreign Key wants id of the Primary key
-    cat_id = Category.objects.get(category=category)
-    
-    # Get listings
-    category_listings = Listing.objects.filter(category=cat_id)
+    # Message for possibly emmpty category
+    message = ""
 
-    print(category_listings)
+    # Get listings
+    category_listings = Listing.objects.filter(category=category)
+
+    if not category_listings:
+        message = "There are no active listings in this category"
 
     # Get all the categories to view them
     categories = Category.objects.all()
 
     return render(request, "auctions/categories.html", {
         "category_listings": category_listings,
-        "categories": categories
+        "categories": categories,
+        "message": message
     })
 
 
 @login_required
-def watchlist(request, username):
+def watchlist(request, user_id):
     """ Shows the user's watchlist of listings """
 
     # Get the current user
-    current_user = User.objects.get(username=username)
+    current_user = User.objects.get(pk=user_id)
 
     # Get all the watched listings of the user via related name
-    watch_list = current_user.user_watchlist.all()
-    print(watch_list)
+    watchlist = current_user.user_watchlist.all()
     
     return render(request, "auctions/watchlist.html", {
-        "watchlist": watch_list
+        "watchlist": watchlist
     })
+

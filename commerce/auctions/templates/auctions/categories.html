@@ -5,7 +5,7 @@
 	<!-- shows categories -->
 	{% for i in categories %}
 		<div>
-			<a href="{% url 'category' category=i.category %}">{{ i.category }}</a>
+			<a href="{% url 'category' category=i.pk %}">{{ i.pk }}</a>
 		</div>
 	{% endfor %}
 
@@ -13,7 +13,7 @@
 		{% for i in category_listings %}
 			<div class="col-12 border">
 				<h3>
-					<a href="">{{ i.title }}</a>
+					<a href="{% url 'listing' i.pk %}">{{ i.title }}</a>
 				</h3>
 				<div>
 					<h5>Description</h5>
@@ -29,9 +29,8 @@
 					<h5>Seller</h5>
 					{{ i.seller }}
 				</div>
-			</div>		
+			</div>
 		{% endfor %}
-	{% else %}
-		<p>There are no active listings in this category</p>
 	{% endif %}
+	<p>{{message}}</p>
 {% endblock %}

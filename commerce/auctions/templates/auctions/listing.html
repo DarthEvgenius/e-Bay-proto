@@ -3,6 +3,26 @@
 {% block body %}
 	<h2 class="text-center">{{ listing.title }}</h2>
 
+	{% if user.is_authenticated %}
+		
+		{% if not inWatchlist %}
+			<form action="{% url 'add_watch' listing_id=listing.id %}" method="post">
+				{% csrf_token %}
+				<button type="submit" class="btn btn-secondary">
+					Add to my Watchlist
+				</button>
+			</form>
+		{% else %}
+			<form action="{% url 'remove_watch' listing_id=listing.id %}" method="post">
+				{% csrf_token %}
+				<button type="submit" class="btn btn-danger">
+					Remove from my Watchlist
+				</button>
+		{% endif %}
+
+    {% endif %}
+
+
 	<div class="container p-3">
 	
 		<div class="row">
@@ -37,7 +57,27 @@
 
 				<!-- Seller -->
 				<div>
-					<p class="fs-5">Seller: {{ listing.seller }}</p>
+					<p>Seller: {{ listing.seller }}</p>
+				</div>
+
+				<!-- Bids -->
+				<div>
+					<h4>Make a bid</h4>
+					<div class="row">
+						<div class="col-4">
+							<h6>Current bid:</h6>
+							<p>
+								{% if not current_bid %}
+									There are no bids yet!
+								{% endif %}
+							</p>
+						</div>
+						<div class="col-4">
+							<button class="btn btn-primary">
+								Make a bid
+							</button>
+						</div>
+					</div>
 				</div>
 			</div>
 
@@ -47,8 +87,7 @@
 	</div>
 	
 
-	<!-- Simply view a listing to unauthorized users -->
-
+	
 	<!-- Add "user.is_authenticated" for "Add to watchlist", "Bid", "comments"-->
 
 	<!-- Seller must have an option to close a listing : authorized_user = seller -->
