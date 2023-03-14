@@ -61,24 +61,23 @@
 				</div>
 
 				<!-- Bids -->
-				<div>
-					<h4>Make a bid</h4>
-					<div class="row">
-						<div class="col-4">
-							<h6>Current bid:</h6>
-							<p>
-								{% if not current_bid %}
-									There are no bids yet!
-								{% endif %}
-							</p>
-						</div>
-						<div class="col-4">
-							<button class="btn btn-primary">
-								Make a bid
-							</button>
+				{% if user.is_authenticated %}
+					<div>
+						<h4>Make a bid</h4>
+						<div class="row p-4">
+							<div class="col-8">
+								<form action="{% url 'new_bid' listing_id=listing.id %}" method="POST">
+									{% csrf_token %}
+									<label for="new_bid">You can start from {{ old_bid }} $:</label>
+									<input type="number" id="new_bid" name="new_bid" min="{{ old_bid }}">
+									<button type="submit" class="btn btn-primary">
+										Make a bid
+									</button>
+								</form>							
+							</div>
 						</div>
 					</div>
-				</div>
+				{% endif %}
 			</div>
 
 			<!-- For image -->

@@ -21,10 +21,9 @@ class Listing(models.Model):
     # Who is owner of the listing
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_listings")
 
-    # Decimal Field can be configured with a resolution on decimal places
-    init_price = models.DecimalField(max_digits=15, decimal_places=2)
+    init_price = models.IntegerField()
 
-    current_price = models.DecimalField(blank=True, null=True, max_digits=15, decimal_places=2)
+    current_price = models.IntegerField(blank=True, null=True)
 
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="category_listings")
 

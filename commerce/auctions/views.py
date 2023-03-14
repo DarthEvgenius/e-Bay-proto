@@ -5,8 +5,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.forms import ModelForm, Textarea
+from django import forms
 
-from .models import User, Listing, Category
+from .models import User, Listing, Category, Bid
 
 
 # Form class for a new listing
@@ -17,6 +18,12 @@ class ListingForm(ModelForm):
         widgets = {
             'description': Textarea(attrs={'cols': 80, 'rows': 10})
         }
+
+
+# # Form class for a new bid
+# class BidForm(forms.Form):
+#     new_bid = forms.DecimalField(min_value=)
+
 
 def index(request):
     """ Views all of the currently active auction listings """
@@ -140,10 +147,20 @@ def listing(request, id):
     # Check if the listing is in user's watchlist (return 1/0 after query)
     inWatchlist = request.user in listing.watchlist.all()
 
+    # Get the last bid for the listing
+    # If there are no bids, current_price will be the same as the init_price
+    # In that case we start bids from the current_price
+    # In other cases we start from current_price + 1
+    old_bid = listing.current_price
+    if listing.init_price != listing.current_price:
+        old_bid += 1
+    
+
     # Pass the listing to the template
     return render(request, "auctions/listing.html", {
         "listing": listing,
-        "inWatchlist":inWatchlist
+        "inWatchlist":inWatchlist,
+        "old_bid": old_bid
     })
 
 
@@ -226,3 +243,40 @@ def watchlist(request, user_id):
         "watchlist": watchlist
     })
 
+
+@login_required
+def new_bid(request, listing_id):
+    """ Creates new bid, updates the table of Bids """
+
+    if request.method == "POST":
+        # Get listing data:
+        listing = Listing.objects.get(pk=listing_id)
+
+        # Get the current price of the listing
+        old_bid = listing.current_price
+
+        # If the listing's current_price != init_price => new bid must be greater than the current price
+        if listing.init_price != listing.current_price:
+            old_bid += 1
+
+        # So, the new bid must be greater than the old bid
+
+        # Get the user's bid and check it
+        nuovo_bid = request.POST["new_bid"]
+        try:
+            nuovo_bid = int(nuovo_bid)
+        except:
+            return HttpResponseRedirect(reverse("listing", args=(listing_id, )))
+
+
+        # If it's correct - update the data and refresh a listing page
+        if nuovo_bid > old_bid:
+            updateBid = Bid(user = request.user, price = nuovo_bid, listing = listing)
+            updateBid.save()
+            listing.current_price = nuovo_bid
+            listing.save()
+            
+            return HttpResponseRedirect(reverse("listing", args=(listing_id, )))
+
+    else:
+        return HttpResponseRedirect(reverse("listing", args=(listing_id, )))
