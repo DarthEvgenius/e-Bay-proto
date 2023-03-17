@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.forms import ModelForm, Textarea
 from django import forms
 
-from .models import User, Listing, Category, Bid
+from .models import User, Listing, Category, Bid, Comment
 
 
 # Form class for a new listing
@@ -20,9 +20,17 @@ class ListingForm(ModelForm):
         }
 
 
-# # Form class for a new bid
-# class BidForm(forms.Form):
-#     new_bid = forms.DecimalField(min_value=)
+# Form class for a new comment
+class CommentForm(ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
+        widgets = {
+            'content': Textarea(attrs={'cols': 40, 'rows': 2})
+        }
+        labels = {
+            'content': 'Type your comment here:'
+        }
 
 
 def index(request):
@@ -154,13 +162,17 @@ def listing(request, id):
     old_bid = listing.current_price
     if listing.init_price != listing.current_price:
         old_bid += 1
-    
+
+    # Get comments about the listing, ordering in reverse
+    comments = Comment.objects.filter(listing=listing).order_by("-pk")
 
     # Pass the listing to the template
     return render(request, "auctions/listing.html", {
         "listing": listing,
         "inWatchlist":inWatchlist,
-        "old_bid": old_bid
+        "old_bid": old_bid,
+        "comments": comments,
+        "commentForm": CommentForm()
     })
 
 
@@ -278,5 +290,37 @@ def new_bid(request, listing_id):
             
             return HttpResponseRedirect(reverse("listing", args=(listing_id, )))
 
+    else:
+        return HttpResponseRedirect(reverse("listing", args=(listing_id, )))
+
+
+@login_required
+def addComment(request, listing_id):
+    """ Creates a new comment to the listing"""
+    
+    if request.method == "POST":
+        listing = Listing.objects.get(pk=listing_id)
+
+        # Get user's input
+        form = CommentForm(request.POST)
+
+        if form.is_valid():
+            # Create, but don't save the new listing instance.
+            comment = form.save(commit=False)
+
+            # Filling form fields
+            #listing = Listing.objects.get(pk=listing_id)
+            comment.listing = Listing.objects.get(pk=listing_id)
+
+            #author = request.user
+            comment.author = request.user
+
+            # Save the new instance.
+            comment.save()
+
+            return HttpResponseRedirect(reverse("listing", args=(listing_id, )))
+        
+        return HttpResponseRedirect(reverse("listing", args=(listing_id, )))
+        
     else:
         return HttpResponseRedirect(reverse("listing", args=(listing_id, )))

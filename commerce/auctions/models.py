@@ -47,6 +47,9 @@ class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.CharField(max_length=1000)
 
+    def __str__(self):
+        return f"{self.author} comments {self.listing}"
+
 class Bid(models.Model):
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="listing_bids")
     user = models.ForeignKey(User, on_delete=models.CASCADE)

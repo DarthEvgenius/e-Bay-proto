@@ -60,23 +60,52 @@
 					<p>Seller: {{ listing.seller }}</p>
 				</div>
 
-				<!-- Bids -->
 				{% if user.is_authenticated %}
+				<!-- Bids -->
 					<div>
 						<h4>Make a bid</h4>
 						<div class="row p-4">
-							<div class="col-8">
-								<form action="{% url 'new_bid' listing_id=listing.id %}" method="POST">
-									{% csrf_token %}
-									<label for="new_bid">You can start from {{ old_bid }} $:</label>
-									<input type="number" id="new_bid" name="new_bid" min="{{ old_bid }}">
-									<button type="submit" class="btn btn-primary">
-										Make a bid
-									</button>
-								</form>							
-							</div>
+							<form action="{% url 'new_bid' listing_id=listing.id %}" method="POST">
+								{% csrf_token %}
+								<label for="new_bid">You can start from {{ old_bid }} $:</label>
+								<input type="number" id="new_bid" name="new_bid" min="{{ old_bid }}">
+								<button type="submit" class="btn btn-primary">
+									Make a bid
+								</button>
+							</form>							
 						</div>
 					</div>
+
+				<!-- Comments -->
+				<div>
+					<h4>Comments</h4>
+					<!-- <div class="row p-4">
+						<form action="{% url 'addComment' listing_id=listing.id %}" method="POST">
+							{% csrf_token %}
+							<label for="comment">Type your comment here:</label>
+							<input type="text" id="comment" name="comment">
+							<button type="submit" class="btn btn-primary">
+								Create a new comment
+							</button>
+						</form>	
+					</div> -->
+					<div>
+						<form action="{% url 'addComment' listing_id=listing.id %}" method="POST">
+							{% csrf_token %}
+							{{ commentForm }}
+							<button type="submit" class="btn btn-primary">
+								Create a new comment
+							</button>
+						</form>
+					</div>
+					<div>
+						<!-- View comments here -->
+						{% for i in comments %}
+							<p>{{ i.author }}: {{ i.content }}</p>
+						{% endfor %}
+					</div>
+				</div>
+
 				{% endif %}
 			</div>
 
@@ -85,9 +114,6 @@
 		</div>
 	</div>
 	
-
-	
-	<!-- Add "user.is_authenticated" for "Add to watchlist", "Bid", "comments"-->
 
 	<!-- Seller must have an option to close a listing : authorized_user = seller -->
 
