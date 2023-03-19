@@ -324,3 +324,23 @@ def addComment(request, listing_id):
         
     else:
         return HttpResponseRedirect(reverse("listing", args=(listing_id, )))
+    
+
+@login_required
+def close_listing(request, listing_id):
+    """ Seller can close the listing """
+
+    # Get the listing
+    listing = Listing.objects.get(pk=listing_id)
+
+    listing.status = False
+
+    # Get the last bid's user
+    winner = Bid.objects.filter(listing=listing).order_by("-time")[0]
+
+    # Make him a winner
+    listing.winner = winner.user
+
+    listing.save()
+
+    return HttpResponseRedirect(reverse("listing", args=(listing_id, )))

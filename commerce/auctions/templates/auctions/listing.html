@@ -18,6 +18,17 @@
 				<button type="submit" class="btn btn-danger">
 					Remove from my Watchlist
 				</button>
+			</form>
+		{% endif %}
+
+		<!-- Close listing button -->
+		{% if listing.seller == user %}
+			<form action="{% url 'close_listing' listing_id=listing.id %}" method="post">
+				{% csrf_token %}
+				<button type="submit" class="btn btn-danger">
+					Close Listing
+				</button>
+			</form>
 		{% endif %}
 
     {% endif %}
@@ -115,7 +126,7 @@
 	</div>
 	
 
-	<!-- Seller must have an option to close a listing : authorized_user = seller -->
+	<!--  If status=False there are no abilities to make a bid, leave comments -->
 
 	<!-- Winner must know that he is a winner : authorized_user = winner -->
 	

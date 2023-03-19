@@ -37,7 +37,7 @@ class Listing(models.Model):
     # This field we populate after smb wil win the listing, so it could be empty
     winner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name="winner_listings")
 
-    watchlist = models.ManyToManyField(User, related_name="user_watchlist")
+    watchlist = models.ManyToManyField(User, blank=True, related_name="user_watchlist")
 
     def __str__(self):
         return f"{self.title}; seller: {self.seller}; status: {self.status}; category: {self.category}"
