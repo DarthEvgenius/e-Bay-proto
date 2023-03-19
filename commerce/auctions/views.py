@@ -166,13 +166,17 @@ def listing(request, id):
     # Get comments about the listing, ordering in reverse
     comments = Comment.objects.filter(listing=listing).order_by("-pk")
 
+    # Check if there is a winner for this listing
+    winner = listing.winner
+
     # Pass the listing to the template
     return render(request, "auctions/listing.html", {
         "listing": listing,
         "inWatchlist":inWatchlist,
         "old_bid": old_bid,
         "comments": comments,
-        "commentForm": CommentForm()
+        "commentForm": CommentForm(),
+        "winner": winner
     })
 
 
@@ -333,6 +337,7 @@ def close_listing(request, listing_id):
     # Get the listing
     listing = Listing.objects.get(pk=listing_id)
 
+    # Change active status to false
     listing.status = False
 
     # Get the last bid's user

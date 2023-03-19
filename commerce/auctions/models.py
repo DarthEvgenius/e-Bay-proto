@@ -57,7 +57,7 @@ class Bid(models.Model):
     time = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Listing: {self.listing.title}; User: {self.user}, {self.price}$"
+        return f"Listing: {self.listing.title}; Who's bid: {self.user}, {self.price}$"
 
 # class Watchlist(models.Model):
 #     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_watchlist")
