@@ -12,6 +12,9 @@ class User(AbstractUser):
 class Category(models.Model):
     name = models.CharField(max_length=20, primary_key=True)
 
+    class Meta:
+        verbose_name_plural = "categories"
+
     def __str__(self):
         return f"{self.name}"
 
@@ -21,7 +24,7 @@ class Listing(models.Model):
     # Who is owner of the listing
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_listings")
 
-    init_price = models.IntegerField()
+    init_price = models.IntegerField("The initial price")
 
     current_price = models.IntegerField(blank=True, null=True)
 

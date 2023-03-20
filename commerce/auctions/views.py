@@ -146,11 +146,11 @@ def new_listing(request):
         })
 
 
-def listing(request, id):
+def listing(request, listing_id):
     """ Shows the details of the listing """
 
     # Get the listing by id
-    listing = Listing.objects.get(id=id)
+    listing = Listing.objects.get(pk=listing_id)
 
     # Check if the listing is in user's watchlist (return 1/0 after query)
     inWatchlist = request.user in listing.watchlist.all()

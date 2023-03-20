@@ -7,34 +7,30 @@
 
         <div class="row gy-3">
 
-            {% if message %}
-                <div>{{ message }}</div>
-            {% endif %}
-
-        {% for i in active_listings %}
-            <div class="col-12 border">
-                <h3>
-                    <a href="{% url 'listing' id=i.id %}">{{ i.title }}</a>
-                </h3>
-                <div>
-                    <h5>Description</h5>
-                    {{ i.description }}
+            {% for i in active_listings %}
+                <div class="col-12 border">
+                    <h3>
+                        <a href="{% url 'listing' listing_id=i.id %}">{{ i.title }}</a>
+                    </h3>
+                    <div>
+                        <h5>Description</h5>
+                        {{ i.description }}
+                    </div>
+                    <div>
+                        <h5>Price</h5>                    
+                        <p>
+                            Current price: {{ i.current_price }}$
+                        </p>
+                    </div>
+                    <div>
+                        <h5>Category</h5>
+                        {{ i.category }}
+                    </div>
+                    <div>
+                        <h5>Seller</h5>
+                        {{ i.seller }}
+                    </div>
                 </div>
-                <div>
-                    <h5>Price</h5>                    
-                    <p>
-                        Current price: {{ i.current_price }}$
-                    </p>
-                </div>
-                <div>
-                    <h5>Category</h5>
-                    {{ i.category }}
-                </div>
-                <div>
-                    <h5>Seller</h5>
-                    {{ i.seller }}
-                </div>
-            </div>
             {% endfor %}
         </div>
     </div>
