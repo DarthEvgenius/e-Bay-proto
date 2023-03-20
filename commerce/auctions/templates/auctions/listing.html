@@ -135,9 +135,10 @@
 			</div>
 
 			<!-- For image -->
-			<div class="col-4">
-				<!-- If there wil be incorrect url, there will be an error in console -->
-				<img src="{{ listing.image }}" class="img-fluid"  alt="{{ listing.image }}">
+			<div class="col-4">				
+				{% if listing.image %}
+					<img src="{{ listing.image }}" class="img-fluid"  alt="{{ listing.image }}">
+				{% endif %}				
 			</div>
 		</div>
 	</div>
